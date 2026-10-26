@@ -50,8 +50,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 #     release tagged web-build-output-<run_id>. Without gh, the publish
 #     step would fail with "gh: not found" inside the container.
 # -----------------------------------------------------------------------------
-RUN curl -fsSL https://cli.github.com/packages/githubcli-archive.key \
-      | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg 2>/dev/null || true \
+
+# Install GitHub CLI using the current signing keyring
+# Install GitHub CLI using the current signing keyring
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+    -o /usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
        > /etc/apt/sources.list.d/github-cli.list \
     && apt-get update -qq \
